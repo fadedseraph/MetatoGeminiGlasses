@@ -99,6 +99,7 @@ class GeminiLiveWebSocket(
         val request = Request.Builder().url(url).build()
 
         val streamingClient = okHttpClient.newBuilder()
+            .pingInterval(0, TimeUnit.MILLISECONDS)
             .readTimeout(0, TimeUnit.MILLISECONDS)
             .build()
 

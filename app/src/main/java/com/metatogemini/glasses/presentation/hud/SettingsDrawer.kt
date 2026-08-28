@@ -97,7 +97,9 @@ fun SettingsDrawer(
     }
 
     val availableModels: List<Pair<String, String>> = listOf(
-        "gemini-2.0-flash-exp" to "Gemini 2.0 Flash (Live Bidi)",
+        "gemini-2.0-flash-exp" to "Gemini 2.0 Flash Exp (Live Bidi)",
+        "gemini-2.0-flash" to "Gemini 2.0 Flash",
+        "gemini-2.5-flash" to "Gemini 2.5 Flash",
         "gemini-1.5-flash" to "Gemini 1.5 Flash",
         "gemini-1.5-pro" to "Gemini 1.5 Pro (Vision Deep)"
     )
@@ -270,6 +272,44 @@ fun SettingsDrawer(
                             fontFamily = FontFamily.Monospace
                         )
                     }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            var tempCustomModel by remember(sessionConfig.model) { mutableStateOf(sessionConfig.model) }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = tempCustomModel,
+                    onValueChange = { tempCustomModel = it },
+                    label = { Text("Custom Model ID", color = TextSecondary) },
+                    placeholder = { Text("e.g. gemini-2.0-flash", color = TextSubtle) },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = CyberCyan,
+                        unfocusedBorderColor = GlassBorder,
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary,
+                        focusedContainerColor = BackgroundDark,
+                        unfocusedContainerColor = BackgroundDark
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = {
+                        focusManager.clearFocus()
+                        if (tempCustomModel.isNotBlank()) {
+                            onUpdateModel(tempCustomModel.trim())
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = CyberCyan),
+                    enabled = tempCustomModel.isNotBlank() && tempCustomModel != sessionConfig.model
+                ) {
+                    Text("Set", color = Color.Black, fontWeight = FontWeight.Bold)
                 }
             }
 

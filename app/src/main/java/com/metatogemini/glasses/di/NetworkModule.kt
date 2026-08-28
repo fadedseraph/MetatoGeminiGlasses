@@ -17,7 +17,6 @@ val networkModule = module {
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(0, TimeUnit.MILLISECONDS) // Indefinite for WebSocket streaming
             .writeTimeout(15, TimeUnit.SECONDS)
-            .pingInterval(10, TimeUnit.SECONDS)
             .addInterceptor(logging)
             .build()
     }
