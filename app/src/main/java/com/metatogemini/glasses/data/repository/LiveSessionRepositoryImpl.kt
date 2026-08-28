@@ -67,7 +67,7 @@ class LiveSessionRepositoryImpl(
                 _connectionState.value = ConnectionState.Connecting
             }
             is LiveSocketEvent.Connected -> {
-                _connectionState.value = ConnectionState.Connecting
+                _connectionState.value = ConnectionState.Connected
             }
             is LiveSocketEvent.SetupAcknowledged -> {
                 _connectionState.value = ConnectionState.Connected

@@ -116,7 +116,13 @@ class GeminiLiveWebSocket(
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
+                AppLogger.d(TAG, "WebSocket text message: $text")
                 handleServerMessage(text)
+            }
+
+            override fun onMessage(webSocket: WebSocket, bytes: okio.ByteString) {
+                AppLogger.d(TAG, "WebSocket binary message: ${bytes.size} bytes")
+                _events.tryEmit(LiveSocketEvent.AudioDataReceived(bytes.toByteArray()))
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
