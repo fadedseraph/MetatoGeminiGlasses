@@ -30,6 +30,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -120,14 +121,25 @@ class GeminiLiveWebSocket(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 _isConnected.set(false)
-                AppLogger.e(TAG, "Gemini Live WebSocket failure", t)
-                _events.tryEmit(LiveSocketEvent.Error(t))
+                val responseBody = try { response?.body?.string() } catch (e: Exception) { null }
+                val errorDetails = listOfNotNull(
+                    t.message,
+                    response?.message?.takeIf { it.isNotBlank() },
+                    responseBody?.takeIf { it.isNotBlank() }
+                ).joinToString(" | ")
+                val finalMsg = if (errorDetails.isNotBlank()) errorDetails else "WebSocket connection failure"
+                AppLogger.e(TAG, "Gemini Live WebSocket failure: $finalMsg", t)
+                _events.tryEmit(LiveSocketEvent.Error(IOException(finalMsg, t), finalMsg))
                 _events.tryEmit(LiveSocketEvent.Disconnected)
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 _isConnected.set(false)
                 AppLogger.i(TAG, "Gemini Live WebSocket closed code=$code reason=$reason")
+                if (code != 1000) {
+                    val errorMsg = "Server closed connection (code=$code, reason=$reason)"
+                    _events.tryEmit(LiveSocketEvent.Error(IOException(errorMsg), errorMsg))
+                }
                 _events.tryEmit(LiveSocketEvent.Disconnected)
             }
         })
@@ -247,6 +259,13 @@ class GeminiLiveWebSocket(
             try {
                 val serverMsg = json.decodeFromString<GeminiLiveServerMessage>(jsonText)
 
+                if (serverMsg.error != null) {
+                    val errorMsg = "Gemini API Error: ${serverMsg.error.message ?: serverMsg.error.status ?: "code ${serverMsg.error.code}"}"
+                    AppLogger.e(TAG, errorMsg)
+                    _events.tryEmit(LiveSocketEvent.Error(IOException(errorMsg), errorMsg))
+                    return@launch
+                }
+
                 if (serverMsg.setupComplete != null) {
                     AppLogger.i(TAG, "Setup acknowledged by server")
                     _events.tryEmit(LiveSocketEvent.SetupAcknowledged)
@@ -279,7 +298,7 @@ class GeminiLiveWebSocket(
                 }
             } catch (e: Exception) {
                 AppLogger.w(TAG, "Error parsing server WebSocket message: $jsonText", e)
-                _events.tryEmit(LiveSocketEvent.Error(e))
+                _events.tryEmit(LiveSocketEvent.Error(e, "Message parse error: ${e.message}"))
             }
         }
     }

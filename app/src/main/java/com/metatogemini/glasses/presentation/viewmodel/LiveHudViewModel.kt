@@ -213,8 +213,8 @@ class LiveHudViewModel(
         stopActivePipelines()
         _uiState.update {
             it.copy(
-                connectionState = ConnectionState.Connecting,
                 errorMessage = null,
+                connectionState = ConnectionState.Connecting,
                 userNotice = "Connecting to Gemini Live..."
             )
         }
@@ -222,11 +222,11 @@ class LiveHudViewModel(
         viewModelScope.launch(dispatchersProvider.io) {
             try {
                 if (currentConfig.isMockMode) {
-                    geminiMockEngine.startSession(currentConfig)
                     observeMockConnectionAndMessages()
+                    geminiMockEngine.startSession(currentConfig)
                 } else {
-                    startLiveSessionUseCase(currentConfig)
                     observeLiveConnectionAndMessages()
+                    startLiveSessionUseCase(currentConfig)
                 }
 
                 startAudioCapturePipeline()
@@ -249,7 +249,14 @@ class LiveHudViewModel(
         connectionCollectorJob?.cancel()
         connectionCollectorJob = viewModelScope.launch(dispatchersProvider.main) {
             liveSessionRepository.connectionState.collectLatest { state ->
-                _uiState.update { it.copy(connectionState = state) }
+                _uiState.update {
+                    it.copy(
+                        connectionState = state,
+                        errorMessage = if (state is ConnectionState.Failed) {
+                            state.reason ?: state.throwable?.message ?: "Connection failed"
+                        } else it.errorMessage
+                    )
+                }
             }
         }
 

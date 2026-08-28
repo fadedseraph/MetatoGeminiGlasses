@@ -112,7 +112,19 @@ data class GeminiLiveServerMessage(
     @SerialName("toolCall")
     val toolCall: GeminiLiveToolCall? = null,
     @SerialName("toolCallCancellation")
-    val toolCallCancellation: GeminiLiveToolCallCancellation? = null
+    val toolCallCancellation: GeminiLiveToolCallCancellation? = null,
+    @SerialName("error")
+    val error: GeminiLiveError? = null
+)
+
+@Serializable
+data class GeminiLiveError(
+    @SerialName("code")
+    val code: Int? = null,
+    @SerialName("message")
+    val message: String? = null,
+    @SerialName("status")
+    val status: String? = null
 )
 
 @Serializable
