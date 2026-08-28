@@ -11,7 +11,7 @@ object Constants {
 
     // Gemini API Endpoints
     const val GEMINI_LIVE_WS_BASE_URL: String =
-        "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent"
+        "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent"
     const val GEMINI_REST_BASE_URL: String =
         "https://generativelanguage.googleapis.com/v1beta"
 
