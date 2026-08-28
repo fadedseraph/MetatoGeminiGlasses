@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#00E5FF</color>
+    <color name="primary_variant">#00B0FF</color>
+    <color name="secondary">#7C4DFF</color>
+    <color name="background">#0A0E17</color>
+    <color name="surface">#121824</color>
+    <color name="surface_variant">#1A2234</color>
+    <color name="error">#FF5252</color>
+    <color name="on_primary">#000000</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="on_background">#E0E6ED</color>
+    <color name="on_surface">#E0E6ED</color>
+    <color name="hud_accent_cyan">#00E5FF</color>
+    <color name="hud_accent_amber">#FFD600</color>
+    <color name="hud_accent_green">#00E676</color>
+    <color name="hud_accent_red">#FF1744</color>
+</resources>

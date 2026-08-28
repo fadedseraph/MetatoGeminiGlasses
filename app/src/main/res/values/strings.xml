@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MetatoGeminiGlasses</string>
+    <string name="title_live_hud">MetatoGemini Live HUD</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_connecting">Connecting...</string>
+    <string name="status_connected">Connected</string>
+    <string name="status_reconnecting">Reconnecting...</string>
+    <string name="status_failed">Connection Failed</string>
+    <string name="action_start_session">Start Live Session</string>
+    <string name="action_stop_session">Stop Session</string>
+    <string name="action_snapshot">Capture Snapshot</string>
+    <string name="action_mute">Mute</string>
+    <string name="action_unmute">Unmute</string>
+    <string name="action_camera_on">Enable Camera</string>
+    <string name="action_camera_off">Disable Camera</string>
+    <string name="action_barge_in">Interrupt</string>
+    <string name="action_settings">Settings</string>
+    <string name="settings_api_key">Gemini API Key</string>
+    <string name="settings_model">Model Selection</string>
+    <string name="settings_voice">Voice Selection</string>
+    <string name="settings_mock_mode">Developer Mock Mode</string>
+    <string name="settings_loopback">Mic Loopback Mode</string>
+</resources>
