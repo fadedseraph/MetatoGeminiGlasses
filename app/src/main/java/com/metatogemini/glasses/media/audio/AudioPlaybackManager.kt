@@ -118,7 +118,7 @@ class AudioPlaybackManagerImpl(
         try {
             val attributes = AudioAttributes.Builder()
                 .apply {
-                    setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                    setUsage(AudioAttributes.USAGE_MEDIA)
                     setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                 }
                 .build()
@@ -251,7 +251,7 @@ class AudioPlaybackManagerImpl(
                 audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
                     .setAudioAttributes(
                         AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
                             .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                             .build()
                     )

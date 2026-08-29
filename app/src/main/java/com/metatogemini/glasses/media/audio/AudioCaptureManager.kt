@@ -98,31 +98,39 @@ class AudioCaptureManagerImpl(
             SAMPLE_RATE_HZ * BYTES_PER_SAMPLE / 5
         ) // ~200ms internal hardware buffer
 
-        val record = try {
-            AudioRecord(
-                MediaRecorder.AudioSource.VOICE_COMMUNICATION,
-                SAMPLE_RATE_HZ,
-                CHANNEL_CONFIG,
-                AUDIO_FORMAT,
-                internalBufferSize
-            ).takeIf { it.state == AudioRecord.STATE_INITIALIZED }
-                ?: AudioRecord(
-                    MediaRecorder.AudioSource.MIC,
+        val audioSources = listOf(
+            MediaRecorder.AudioSource.VOICE_RECOGNITION,
+            MediaRecorder.AudioSource.MIC,
+            MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+            MediaRecorder.AudioSource.DEFAULT
+        )
+
+        var record: AudioRecord? = null
+        for (source in audioSources) {
+            try {
+                val candidate = AudioRecord(
+                    source,
                     SAMPLE_RATE_HZ,
                     CHANNEL_CONFIG,
                     AUDIO_FORMAT,
                     internalBufferSize
                 )
-        } catch (e: Exception) {
-            AppLogger.e(TAG, "Failed to initialize AudioRecord", e)
-            _captureState.value = CaptureState.ERROR
-            return@flow
+                if (candidate.state == AudioRecord.STATE_INITIALIZED) {
+                    record = candidate
+                    AppLogger.i(TAG, "AudioRecord initialized successfully with audio source: $source")
+                    break
+                } else {
+                    candidate.release()
+                }
+            } catch (e: Exception) {
+                AppLogger.w(TAG, "Failed initializing AudioRecord with audio source: $source", e)
+            }
         }
 
-        if (record.state != AudioRecord.STATE_INITIALIZED) {
-            AppLogger.e(TAG, "AudioRecord state is uninitialized")
+        if (record == null || record.state != AudioRecord.STATE_INITIALIZED) {
+            AppLogger.e(TAG, "AudioRecord failed to initialize with all candidate audio sources")
             _captureState.value = CaptureState.ERROR
-            record.release()
+            record?.release()
             return@flow
         }
 

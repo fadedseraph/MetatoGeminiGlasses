@@ -34,6 +34,7 @@ import com.metatogemini.glasses.mock.MicLoopbackManager
 import com.metatogemini.glasses.presentation.model.HudUiState
 import com.metatogemini.glasses.presentation.model.SubtitleEntry
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -116,14 +117,10 @@ class LiveHudViewModel(
                     sendVideoFrameUseCase(photo.jpegBytes)
                 }
             }
-            _uiState.update {
-                it.copy(userNotice = "📸 Glasses photo sent to live conversation context")
-            }
+            setUserNotice("📸 Glasses photo sent to live conversation context")
         } else if (config.autoAnalyzeGlassesPhotos) {
             // Live session is NOT running: perform standalone REST snapshot analysis and open inspector modal
-            _uiState.update {
-                it.copy(userNotice = "📸 Photo synced from ${photo.source} (${photo.fileName})")
-            }
+            setUserNotice("📸 Photo synced from ${photo.source} (${photo.fileName})")
             analyzeSnapshotPhoto(
                 imageBytes = photo.jpegBytes,
                 customPrompt = "Describe what you see in this photo taken from the smart glasses in detail and provide actionable advice for the glasses wearer.",
@@ -214,10 +211,10 @@ class LiveHudViewModel(
         _uiState.update {
             it.copy(
                 errorMessage = null,
-                connectionState = ConnectionState.Connecting,
-                userNotice = "Connecting to Gemini Live..."
+                connectionState = ConnectionState.Connecting
             )
         }
+        setUserNotice("Connecting to Gemini Live...")
 
         viewModelScope.launch(dispatchersProvider.io) {
             try {
@@ -256,6 +253,9 @@ class LiveHudViewModel(
                             state.reason ?: state.throwable?.message ?: "Connection failed"
                         } else it.errorMessage
                     )
+                }
+                if (state is ConnectionState.Connected) {
+                    setUserNotice("Connected to Gemini Live")
                 }
             }
         }
@@ -370,9 +370,9 @@ class LiveHudViewModel(
                     AppLogger.e(TAG, "Audio capture error", e)
                 }
                 .collect { pcmChunk ->
-                    if (!_uiState.value.isMicMuted && _uiState.value.isConnected) {
-                        val isMock = _uiState.value.isMockMode
-                        if (isMock) {
+                    val currentState = _uiState.value
+                    if (!currentState.isMicMuted && (currentState.isConnected || currentState.connectionState is ConnectionState.Connected)) {
+                        if (currentState.isMockMode) {
                             geminiMockEngine.sendAudioChunk(pcmChunk)
                         } else {
                             sendAudioChunkUseCase(pcmChunk)
@@ -641,6 +641,16 @@ class LiveHudViewModel(
 
     fun openSnapshotInspector(open: Boolean) {
         _uiState.update { it.copy(isSnapshotInspectorOpen = open) }
+    }
+
+    fun setUserNotice(notice: String?) {
+        _uiState.update { it.copy(userNotice = notice) }
+        if (notice != null) {
+            viewModelScope.launch(dispatchersProvider.main) {
+                delay(3500)
+                _uiState.update { if (it.userNotice == notice) it.copy(userNotice = null) else it }
+            }
+        }
     }
 
     fun clearError() {

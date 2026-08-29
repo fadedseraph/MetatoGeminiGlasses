@@ -171,7 +171,6 @@ class BluetoothAudioManagerImpl(
                     val targetDevice = devices.firstOrNull { device ->
                         device.type == AudioDeviceInfo.TYPE_BLE_HEADSET ||
                             device.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
-                            device.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP ||
                             device.type == AudioDeviceInfo.TYPE_HEARING_AID
                     }
 
@@ -183,7 +182,6 @@ class BluetoothAudioManagerImpl(
                             val typeName = when (targetDevice.type) {
                                 AudioDeviceInfo.TYPE_BLE_HEADSET -> "BLE Audio (Glasses)"
                                 AudioDeviceInfo.TYPE_BLUETOOTH_SCO -> "Bluetooth SCO (Glasses)"
-                                AudioDeviceInfo.TYPE_BLUETOOTH_A2DP -> "Bluetooth A2DP"
                                 AudioDeviceInfo.TYPE_HEARING_AID -> "Hearing Aid"
                                 else -> "Bluetooth Headset"
                             }

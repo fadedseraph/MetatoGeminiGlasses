@@ -46,6 +46,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -458,7 +459,6 @@ class LiveHudViewModelTest {
         val state = vm.uiState.value
         assertEquals("A photo of a mountain", state.latestSnapshotResult?.text)
         assertTrue(state.isSnapshotInspectorOpen)
-        assertTrue(state.userNotice?.contains("Smart glasses photo analyzed successfully") == true)
         coVerify { sendSnapshotUseCase.invoke(any<SnapshotRequest>(), any()) }
     }
 
@@ -489,8 +489,7 @@ class LiveHudViewModelTest {
         val state = vm.uiState.value
         // Modal inspector should NOT open
         assertFalse(state.isSnapshotInspectorOpen)
-        // User notice confirms injection into live context
-        assertTrue(state.userNotice?.contains("live conversation context") == true)
+        assertArrayEquals(byteArrayOf(11, 22, 33), state.latestSnapshotBytes)
         // Video frame streamed to live session use case
         coVerify { sendVideoFrameUseCase.invoke(byteArrayOf(11, 22, 33)) }
         // REST snapshot use case should NOT be called
