@@ -16,14 +16,14 @@ object Constants {
         "https://generativelanguage.googleapis.com/v1beta"
 
     // Model & Voice Defaults
-    const val DEFAULT_MODEL: String = "gemini-2.0-flash-realtime-exp"
+    const val DEFAULT_MODEL: String = "gemini-2.5-flash-native-audio-latest"
     const val DEFAULT_VOICE: String = "Puck"
     val SUPPORTED_MODELS: List<String> = listOf(
-        "gemini-2.0-flash-realtime-exp",
-        "gemini-2.5-flash-native-audio",
-        "gemini-2.0-flash",
+        "gemini-2.5-flash-native-audio-latest",
+        "gemini-2.5-flash-native-audio-preview-12-2025",
+        "gemini-2.5-flash-native-audio-preview-09-2025",
+        "gemini-3.5-transcribe-live",
         "gemini-2.5-flash",
-        "gemini-1.5-flash",
         "gemini-1.5-pro"
     )
     val SUPPORTED_VOICES: List<String> = listOf(

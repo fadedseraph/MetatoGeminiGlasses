@@ -97,11 +97,11 @@ fun SettingsDrawer(
     }
 
     val availableModels: List<Pair<String, String>> = listOf(
-        "gemini-2.0-flash-realtime-exp" to "Gemini 2.0 Flash Realtime (Live Bidi)",
-        "gemini-2.5-flash-native-audio" to "Gemini 2.5 Flash Native Audio (Live)",
-        "gemini-2.0-flash" to "Gemini 2.0 Flash",
-        "gemini-2.5-flash" to "Gemini 2.5 Flash (Snapshot Vision Only)",
-        "gemini-1.5-flash" to "Gemini 1.5 Flash (Snapshot Vision Only)",
+        "gemini-2.5-flash-native-audio-latest" to "Gemini 2.5 Flash Native Audio Latest (Live Voice)",
+        "gemini-2.5-flash-native-audio-preview-12-2025" to "Gemini 2.5 Flash Native Audio (Preview Dec 2025)",
+        "gemini-2.5-flash-native-audio-preview-09-2025" to "Gemini 2.5 Flash Native Audio (Preview Sep 2025)",
+        "gemini-3.5-transcribe-live" to "Gemini 3.5 Transcribe Live",
+        "gemini-2.5-flash" to "Gemini 2.5 Flash (Snapshot Vision REST)",
         "gemini-1.5-pro" to "Gemini 1.5 Pro (Deep Snapshot Vision)"
     )
 
