@@ -100,8 +100,8 @@ class GeminiLiveWebSocket(
             .url("$baseUrl?key=$apiKey")
             .addHeader("x-goog-api-key", apiKey)
 
-        if (!apiKey.startsWith("AIza")) {
-            // OAuth 2.0 / Vertex AI access token (e.g. AQ.*, ya29.*)
+        if (apiKey.startsWith("ya29.")) {
+            // Google Cloud OAuth 2.0 Access Token
             requestBuilder.addHeader("Authorization", "Bearer $apiKey")
         }
 

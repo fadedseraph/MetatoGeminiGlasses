@@ -70,7 +70,7 @@ class GeminiRestClient(
             .post(httpRequestBody)
             .addHeader("x-goog-api-key", apiKey)
 
-        if (!apiKey.startsWith("AIza")) {
+        if (apiKey.startsWith("ya29.")) {
             requestBuilder.addHeader("Authorization", "Bearer $apiKey")
         }
 
