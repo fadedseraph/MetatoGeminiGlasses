@@ -96,8 +96,16 @@ class GeminiLiveWebSocket(
 
         val modelIdentifier = if (model.startsWith("models/")) model.removePrefix("models/") else model
         val baseUrl = Constants.GEMINI_LIVE_WS_BASE_URL
-        val url = "$baseUrl?key=$apiKey"
-        val request = Request.Builder().url(url).build()
+        val requestBuilder = Request.Builder()
+            .url("$baseUrl?key=$apiKey")
+            .addHeader("x-goog-api-key", apiKey)
+
+        if (!apiKey.startsWith("AIza")) {
+            // OAuth 2.0 / Vertex AI access token (e.g. AQ.*, ya29.*)
+            requestBuilder.addHeader("Authorization", "Bearer $apiKey")
+        }
+
+        val request = requestBuilder.build()
 
         val streamingClient = okHttpClient.newBuilder()
             .pingInterval(0, TimeUnit.MILLISECONDS)

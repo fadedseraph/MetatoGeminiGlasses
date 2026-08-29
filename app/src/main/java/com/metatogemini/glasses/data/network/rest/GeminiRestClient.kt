@@ -56,7 +56,6 @@ class GeminiRestClient(
         val startTime = System.currentTimeMillis()
         val modelIdentifier = if (model.startsWith("models/")) model else "models/$model"
         val url = "${Constants.GEMINI_REST_BASE_URL}/$modelIdentifier:generateContent?key=$apiKey"
-
         val requestPayload = request.toRestRequest(systemInstruction = systemInstruction)
         val jsonBodyString = try {
             json.encodeToString(requestPayload)
@@ -66,10 +65,16 @@ class GeminiRestClient(
         }
 
         val httpRequestBody = jsonBodyString.toRequestBody(jsonMediaType)
-        val httpRequest = Request.Builder()
+        val requestBuilder = Request.Builder()
             .url(url)
             .post(httpRequestBody)
-            .build()
+            .addHeader("x-goog-api-key", apiKey)
+
+        if (!apiKey.startsWith("AIza")) {
+            requestBuilder.addHeader("Authorization", "Bearer $apiKey")
+        }
+
+        val httpRequest = requestBuilder.build()
 
         AppLogger.i(TAG, "Sending snapshot request to Gemini REST: $modelIdentifier")
 
