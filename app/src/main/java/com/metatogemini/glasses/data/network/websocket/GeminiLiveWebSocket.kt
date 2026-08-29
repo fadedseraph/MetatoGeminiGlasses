@@ -94,7 +94,8 @@ class GeminiLiveWebSocket(
         disconnect()
         scope = CoroutineScope(SupervisorJob() + dispatchersProvider.io)
 
-        val modelIdentifier = if (model.startsWith("models/")) model.removePrefix("models/") else model
+        val rawModel = if (model.startsWith("models/")) model.removePrefix("models/") else model
+        val modelIdentifier = if (rawModel.startsWith("gemini-2.0")) rawModel else Constants.DEFAULT_MODEL
         val baseUrl = Constants.GEMINI_LIVE_WS_BASE_URL
         val requestBuilder = Request.Builder()
             .url("$baseUrl?key=$apiKey")

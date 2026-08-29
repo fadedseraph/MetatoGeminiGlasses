@@ -97,11 +97,11 @@ fun SettingsDrawer(
     }
 
     val availableModels: List<Pair<String, String>> = listOf(
-        "gemini-2.0-flash-exp" to "Gemini 2.0 Flash Exp (Live Bidi)",
-        "gemini-2.0-flash" to "Gemini 2.0 Flash",
-        "gemini-2.5-flash" to "Gemini 2.5 Flash",
-        "gemini-1.5-flash" to "Gemini 1.5 Flash",
-        "gemini-1.5-pro" to "Gemini 1.5 Pro (Vision Deep)"
+        "gemini-2.0-flash-exp" to "Gemini 2.0 Flash Exp (Live Bidi Voice)",
+        "gemini-2.0-flash" to "Gemini 2.0 Flash (Live Bidi Voice)",
+        "gemini-2.5-flash" to "Gemini 2.5 Flash (Snapshot Vision Only)",
+        "gemini-1.5-flash" to "Gemini 1.5 Flash (Snapshot Vision Only)",
+        "gemini-1.5-pro" to "Gemini 1.5 Pro (Deep Snapshot Vision)"
     )
 
     val availableVoices: List<String> = Constants.SUPPORTED_VOICES
