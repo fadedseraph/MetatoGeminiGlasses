@@ -69,6 +69,7 @@ class MicLoopbackManager(
 
         AppLogger.i(TAG, "Starting mic loopback at volume=${_volumeScale.value}")
 
+        var loopbackChunks = 0L
         loopbackJob = loopbackScope.launch {
             audioCaptureManager.startCapture(chunkSampleCount = Constants.CAPTURE_CHUNK_SAMPLES)
                 .catch { e ->
@@ -79,6 +80,10 @@ class MicLoopbackManager(
                     if (!isActive || !_isLoopbackActive.value) return@collect
                     val scaledChunk = scalePcmVolume(rawChunk, _volumeScale.value)
                     audioPlaybackManager.enqueueAudio(scaledChunk)
+                    loopbackChunks++
+                    if (loopbackChunks % 50L == 0L) {
+                        AppLogger.d(TAG, "Mic loopback active: $loopbackChunks chunks looped (${scaledChunk.size} bytes/chunk)")
+                    }
                 }
         }
     }

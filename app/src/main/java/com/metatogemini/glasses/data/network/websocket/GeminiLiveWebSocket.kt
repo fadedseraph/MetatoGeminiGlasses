@@ -190,6 +190,8 @@ class GeminiLiveWebSocket(
         }
     }
 
+    private var sentAudioChunksCount = 0L
+
     /**
      * Streams 16kHz PCM audio chunk in Base64 encoding.
      */
@@ -207,7 +209,15 @@ class GeminiLiveWebSocket(
         )
         try {
             val payload = json.encodeToString(chunkMessage)
-            webSocket?.send(payload)
+            val sent = webSocket?.send(payload) ?: false
+            if (sent) {
+                sentAudioChunksCount++
+                if (sentAudioChunksCount % 50L == 0L) {
+                    AppLogger.d(TAG, "Sent $sentAudioChunksCount audio chunks to Gemini Live WebSocket")
+                }
+            } else {
+                AppLogger.w(TAG, "webSocket.send returned false for audio chunk")
+            }
         } catch (e: Exception) {
             AppLogger.w(TAG, "Error sending audio chunk", e)
         }

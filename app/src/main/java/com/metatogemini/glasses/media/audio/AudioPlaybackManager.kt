@@ -142,6 +142,7 @@ class AudioPlaybackManagerImpl(
                     .build()
 
                 audioTrack?.play()
+                AppLogger.i(TAG, "AudioTrack initialized successfully at ${sampleRate}Hz (state=${audioTrack?.state}, playState=${audioTrack?.playState})")
             }
             _playbackState.value = PlaybackState.IDLE
             startPlaybackWorker()
@@ -156,6 +157,7 @@ class AudioPlaybackManagerImpl(
         playbackJob?.cancel()
         playbackJob = scope.launch(ioDispatcher) {
             val currentGen = generationId.get()
+            var totalChunksPlayed = 0L
             while (isActive) {
                 val chunk = try {
                     audioChannel.receive()
@@ -188,6 +190,10 @@ class AudioPlaybackManagerImpl(
                         }
                         written += result
                     }
+                    totalChunksPlayed++
+                    if (totalChunksPlayed % 50L == 0L) {
+                        AppLogger.d(TAG, "AudioTrack playing: $totalChunksPlayed chunks written (${chunk.size} bytes/chunk)")
+                    }
                 }
 
                 if (audioChannel.isEmpty) {
@@ -203,7 +209,10 @@ class AudioPlaybackManagerImpl(
         if (_playbackState.value == PlaybackState.STOPPED) {
             initTrack(currentSampleRate)
         }
-        audioChannel.trySend(pcmChunk)
+        val sent = audioChannel.trySend(pcmChunk).isSuccess
+        if (!sent) {
+            AppLogger.w(TAG, "audioChannel failed to enqueue ${pcmChunk.size} bytes")
+        }
     }
 
     /**

@@ -142,6 +142,7 @@ class AudioCaptureManagerImpl(
 
             val buffer = ByteArray(chunkByteSize)
 
+            var totalChunksRead = 0L
             while (currentCoroutineContext().isActive && _captureState.value != CaptureState.IDLE) {
                 if (isPaused) {
                     delay(20)
@@ -159,6 +160,10 @@ class AudioCaptureManagerImpl(
                     // Compute real-time RMS
                     val calculatedRms = AudioMath.calculateRms(pcmChunk)
                     _rmsState.value = calculatedRms
+                    totalChunksRead++
+                    if (totalChunksRead % 50L == 0L) {
+                        AppLogger.d(TAG, "AudioRecord active: $totalChunksRead chunks captured (RMS: ${calculatedRms.rms}, norm: ${calculatedRms.normalizedRms})")
+                    }
 
                     emit(pcmChunk)
                 } else if (bytesRead < 0) {
