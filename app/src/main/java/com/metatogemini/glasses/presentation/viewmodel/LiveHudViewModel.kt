@@ -217,6 +217,7 @@ class LiveHudViewModel(
         setUserNotice("Connecting to Gemini Live...")
 
         viewModelScope.launch(dispatchersProvider.io) {
+            micLoopbackManager.stopLoopback()
             try {
                 if (currentConfig.isMockMode) {
                     observeMockConnectionAndMessages()

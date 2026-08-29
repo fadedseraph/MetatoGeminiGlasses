@@ -111,9 +111,9 @@ class AudioPlaybackManagerImpl(
             AudioFormat.ENCODING_PCM_16BIT
         )
         val internalBufferSize = max(
-            if (minBufferSize > 0) minBufferSize * 2 else sampleRate * 2,
-            sampleRate * 2 / 5
-        ) // ~200ms buffer
+            if (minBufferSize > 0) minBufferSize * 4 else sampleRate * 2,
+            sampleRate // ~500ms smooth jitter buffer
+        )
 
         try {
             val attributes = AudioAttributes.Builder()
